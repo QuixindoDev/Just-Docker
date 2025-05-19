@@ -1,4 +1,4 @@
-FROM maven:3.8.4-jdk-8 AS build
+FROM maven:3.8.4-eclipse-temurin-17 AS build
 
 COPY src /app/src
 COPY pom.xml /app
@@ -7,10 +7,12 @@ WORKDIR /app
 
 RUN mvn clean install
 
-FROM openjdk:17-jre-alpine
+FROM eclipse-temurin:17-jdk-jammy
 
 COPY --from=build /app/target/docker-0.0.1-SNAPSHOT.jar /app/app.jar
 
-LABEL authors="eufrasio"
+WORKDIR /app
+
 EXPOSE 8080
-ENTRYPOINT ["top", "-b"]
+
+CMD ["java", "-jar", "app.jar"]
